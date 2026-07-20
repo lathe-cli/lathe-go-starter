@@ -1,0 +1,26 @@
+schema_version: 1
+language: go
+defaults:
+  app_name: CLI-first Go app
+  app_slug: cli-first-go-app
+  cli_name: appctl
+  go_module: example.com/cli-first-go-app
+  lathe_version: v0.4.4
+replacements:
+  - variable: app_name
+    files: [README.md]
+  - variable: app_name
+    from: CLI-first Node application
+    files: [openapi/openapi.yaml]
+  - variable: cli_name
+    files: [.github/workflows/ci.yml, AGENTS.md, Makefile, README.md, cli.yaml, cmd/appctl/cli.yaml, internal/app/app_test.go]
+  - variable: go_module
+    files: [go.mod, cmd/appctl/main.go, cmd/server/main.go]
+  - variable: lathe_version
+    files: [go.mod, Makefile]
+renames:
+  - from: cmd/appctl
+    variable: cli_name
+generated: [internal/generated, skills/appctl]
+cleanup: [.cache, bin]
+check_profile: make
