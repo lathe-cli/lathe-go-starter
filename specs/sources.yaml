@@ -1,0 +1,8 @@
+sources:
+  app:
+    local_path: ../openapi
+    default_hostname: http://127.0.0.1:3000
+    backend: openapi3
+    openapi3:
+      files: [openapi.yaml]
+

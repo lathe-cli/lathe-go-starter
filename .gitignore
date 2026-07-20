@@ -1,0 +1,7 @@
+.cache/
+.local/
+bin/
+coverage/
+.env
+.DS_Store
+
