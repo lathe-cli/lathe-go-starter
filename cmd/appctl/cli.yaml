@@ -1,0 +1,4 @@
+cli:
+  name: appctl
+  short: "CLI for the application API"
+

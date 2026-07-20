@@ -1,0 +1,4 @@
+interface:
+  display_name: "appctl CLI"
+  short_description: "Use the appctl generated CLI"
+  default_prompt: "Use $appctl to find and run the right appctl command."
