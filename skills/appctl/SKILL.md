@@ -38,5 +38,9 @@ Use this skill when a user asks you to operate `appctl`, inspect its API command
 - Do not guess flags or request body shape from command names.
 - Do not execute directly from search results; confirm with `commands show` first.
 - Prefer `-o json` for machine-readable command output unless the user asks for human-readable output.
+- With `-o json` or `-o yaml`, branch on `error.code` and process exit status; `error.message` and `error.hint` are safe human guidance, and `error.http.status` is the only optional HTTP context.
+- A configured stream pause is successful (`exit 0`); inspect the collected output field mapped from the pause event instead of treating it as an error.
+- For collected streams, choose one mode: `-o json` for one stable document, `--stream` in the default output mode when catalog `output.streaming.policy.live` is present, or `-o raw` for wire events.
 - Use `--file`, `--set`, or `--set-str` for JSON request bodies according to `commands show` body requirements.
+- When `body.runtime_schema` is present, normal execution fetches and validates against that schema before the target request; `--dry-run` stays network-free and skips this preflight.
 - For sensitive flags, prefer safe modes from `flags[].input_modes`: `--<flag>-env`, `--<flag>-file`, or `--<flag>-stdin`.

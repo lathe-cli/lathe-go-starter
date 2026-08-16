@@ -8,14 +8,13 @@ import (
 	"github.com/lathe-cli/lathe/pkg/runtime"
 )
 
-const generatedSchemaVersion = 8
+const generatedSchemaVersion = 11
 
 func Mount(root *cobra.Command) error {
 	if err := runtime.AssertSchema(generatedSchemaVersion); err != nil {
 		return err
 	}
-	runtime.Build(root, "app", Specs)
-	return nil
+	return runtime.Build(root, "app", Specs)
 }
 
 func MountFlat(root *cobra.Command) error {
@@ -50,6 +49,7 @@ var Specs = []runtime.CommandSpec{
 			MediaType: "application/json",
 			Schema:    &runtime.SchemaSpec{Type: "object", Properties: map[string]*runtime.SchemaSpec{"title": &runtime.SchemaSpec{Type: "string"}}, Required: []string{"title"}},
 		},
+		Output:   runtime.OutputHints{ResponseMediaType: "application/json"},
 		Security: &runtime.SecurityHint{Public: true},
 	},
 	{
@@ -87,9 +87,8 @@ var Specs = []runtime.CommandSpec{
 		Method:          "GET",
 		PathTpl:         "/tasks",
 		DefaultHostname: "http://127.0.0.1:3000",
-		Output: runtime.OutputHints{DefaultColumns: []string{"id", "completed", "title"}, ResponseMediaType: "application/json",
-		},
-		Security: &runtime.SecurityHint{Public: true},
+		Output:          runtime.OutputHints{DefaultColumns: []string{"id", "completed", "title"}, ResponseMediaType: "application/json"},
+		Security:        &runtime.SecurityHint{Public: true},
 	},
 	{
 		Group:           "Tasks",
