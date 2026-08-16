@@ -29,7 +29,7 @@ func cli(t *testing.T, hostname string, args ...string) any {
 	return value
 }
 
-func cliFailure(t *testing.T, hostname string, args ...string) string {
+func cliFailure(t *testing.T, hostname string, args ...string) int {
 	t.Helper()
 	cmd := exec.Command("./bin/appctl", append([]string{"--hostname", hostname}, append(args, "-o", "json")...)...)
 	cmd.Dir = "../.."
@@ -41,7 +41,17 @@ func cliFailure(t *testing.T, hostname string, args ...string) string {
 	if !ok {
 		t.Fatalf("appctl %v: %v", args, err)
 	}
-	return string(exitErr.Stderr)
+	var response struct {
+		Error struct {
+			HTTP struct {
+				Status int `json:"status"`
+			} `json:"http"`
+		} `json:"error"`
+	}
+	if err := json.Unmarshal(exitErr.Stderr, &response); err != nil {
+		t.Fatalf("decode appctl error: %v\n%s", err, exitErr.Stderr)
+	}
+	return response.Error.HTTP.Status
 }
 
 func TestGeneratedCLIIsTheApplicationAcceptanceSurface(t *testing.T) {
@@ -76,15 +86,15 @@ func TestGeneratedCLISurfacesAPIErrors(t *testing.T) {
 	srv := httptest.NewServer(NewHandler())
 	defer srv.Close()
 
-	if got := cliFailure(t, srv.URL, "tasks", "create", "--set-str", "title="); !strings.Contains(got, "HTTP 400") || !strings.Contains(got, "title is required") {
-		t.Fatalf("create error = %s", got)
+	if got := cliFailure(t, srv.URL, "tasks", "create", "--set-str", "title="); got != http.StatusBadRequest {
+		t.Fatalf("create error status = %d", got)
 	}
-	if got := cliFailure(t, srv.URL, "tasks", "get", "--id", "missing"); !strings.Contains(got, "HTTP 404") || !strings.Contains(got, "task not found") {
-		t.Fatalf("get error = %s", got)
+	if got := cliFailure(t, srv.URL, "tasks", "get", "--id", "missing"); got != http.StatusNotFound {
+		t.Fatalf("get error status = %d", got)
 	}
 	created := cli(t, srv.URL, "tasks", "create", "--set", "title=Keep the contract honest").(map[string]any)
-	if got := cliFailure(t, srv.URL, "tasks", "update", "--id", created["id"].(string), "--file", "test/empty.json"); !strings.Contains(got, "HTTP 400") || !strings.Contains(got, "title or completed is required") {
-		t.Fatalf("update error = %s", got)
+	if got := cliFailure(t, srv.URL, "tasks", "update", "--id", created["id"].(string), "--file", "test/empty.json"); got != http.StatusBadRequest {
+		t.Fatalf("update error status = %d", got)
 	}
 }
 

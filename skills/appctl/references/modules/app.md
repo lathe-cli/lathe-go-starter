@@ -28,6 +28,7 @@
 - Auth: public
 - Body: required; media type `application/json`
 - Flags: none
+- Output: response media `application/json`
 
 ### `appctl tasks delete`
 
@@ -66,4 +67,3 @@
 - Flags:
   - `--id` (path, required): id
 - Output: response media `application/json`
-
