@@ -4,9 +4,9 @@
 
 - Backend: `openapi3`
 - Default hostname: `http://127.0.0.1:3000`
-- Repository: `unknown`
-- Pinned tag: ``unknown``
+- Source kind: `local`
 - Files: `openapi.yaml`
+- Reproducible: no — follows the local working tree; no immutable revision recorded
 
 ## Health
 
