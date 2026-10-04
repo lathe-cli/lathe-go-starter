@@ -4,19 +4,20 @@ package generated
 
 import (
 	app "example.com/cli-first-go-app/internal/generated/app"
+	latheruntime "github.com/lathe-cli/lathe/pkg/runtime"
 	"github.com/spf13/cobra"
 )
 
-// Mount mounts every generated command and capability declared by codegen.
+var latheSourceProvenance = []latheruntime.SourceProvenance{
+	{ID: "app", Backend: "openapi3", Kind: "local", RepoURL: "", PinnedTag: "", ResolvedSHA: "", Reproducible: false},
+}
+
 func Mount(root *cobra.Command) error {
 	return MountModules(root)
 }
 
-// MountModules mounts every module and generated capability under root.
-// The import list above is the single source of truth for which modules
-// are compiled into this binary. main.go wires this call after
-// app.NewApp() so the framework package never imports downstream code.
 func MountModules(root *cobra.Command) error {
+	latheruntime.AttachSourceProvenance(root, latheSourceProvenance)
 	if err := app.MountFlat(root); err != nil {
 		return err
 	}

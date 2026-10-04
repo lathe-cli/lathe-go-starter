@@ -3,12 +3,11 @@
 package app
 
 import (
-	"github.com/spf13/cobra"
-
 	"github.com/lathe-cli/lathe/pkg/runtime"
+	"github.com/spf13/cobra"
 )
 
-const generatedSchemaVersion = 11
+const generatedSchemaVersion = 22
 
 func Mount(root *cobra.Command) error {
 	if err := runtime.AssertSchema(generatedSchemaVersion); err != nil {
@@ -25,7 +24,7 @@ func MountFlat(root *cobra.Command) error {
 }
 
 var Specs = []runtime.CommandSpec{
-	{
+	runtime.CommandSpec{
 		Group:           "Health",
 		Use:             "get",
 		Short:           "Check application health",
@@ -33,10 +32,14 @@ var Specs = []runtime.CommandSpec{
 		Method:          "GET",
 		PathTpl:         "/health",
 		DefaultHostname: "http://127.0.0.1:3000",
-		Output:          runtime.OutputHints{ResponseMediaType: "application/json"},
-		Security:        &runtime.SecurityHint{Public: true},
+		Output: runtime.OutputHints{
+			ResponseMediaType: "application/json",
+		},
+		Security: &runtime.SecurityHint{
+			Public: true,
+		},
 	},
-	{
+	runtime.CommandSpec{
 		Group:           "Tasks",
 		Use:             "create",
 		Short:           "Create a task",
@@ -47,12 +50,22 @@ var Specs = []runtime.CommandSpec{
 		RequestBody: &runtime.RequestBody{
 			Required:  true,
 			MediaType: "application/json",
-			Schema:    &runtime.SchemaSpec{Type: "object", Properties: map[string]*runtime.SchemaSpec{"title": &runtime.SchemaSpec{Type: "string"}}, Required: []string{"title"}},
+			Schema: &runtime.SchemaSpec{
+				Type: "object",
+				Properties: map[string]*runtime.SchemaSpec{"title": &runtime.SchemaSpec{
+					Type: "string",
+				}},
+				Required: []string{"title"},
+			},
 		},
-		Output:   runtime.OutputHints{ResponseMediaType: "application/json"},
-		Security: &runtime.SecurityHint{Public: true},
+		Output: runtime.OutputHints{
+			ResponseMediaType: "application/json",
+		},
+		Security: &runtime.SecurityHint{
+			Public: true,
+		},
 	},
-	{
+	runtime.CommandSpec{
 		Group:           "Tasks",
 		Use:             "delete",
 		Short:           "Delete a task",
@@ -60,12 +73,19 @@ var Specs = []runtime.CommandSpec{
 		Method:          "DELETE",
 		PathTpl:         "/tasks/{id}",
 		DefaultHostname: "http://127.0.0.1:3000",
-		Params: []runtime.ParamSpec{
-			{Name: "id", Flag: "id", In: "path", GoType: "string", Help: "id (path, required)", Required: true},
+		Params: []runtime.ParamSpec{runtime.ParamSpec{
+			Name:     "id",
+			Flag:     "id",
+			In:       "path",
+			GoType:   "string",
+			Help:     "id (path, required)",
+			Required: true,
+		}},
+		Security: &runtime.SecurityHint{
+			Public: true,
 		},
-		Security: &runtime.SecurityHint{Public: true},
 	},
-	{
+	runtime.CommandSpec{
 		Group:           "Tasks",
 		Use:             "get",
 		Short:           "Get a task",
@@ -73,13 +93,22 @@ var Specs = []runtime.CommandSpec{
 		Method:          "GET",
 		PathTpl:         "/tasks/{id}",
 		DefaultHostname: "http://127.0.0.1:3000",
-		Params: []runtime.ParamSpec{
-			{Name: "id", Flag: "id", In: "path", GoType: "string", Help: "id (path, required)", Required: true},
+		Params: []runtime.ParamSpec{runtime.ParamSpec{
+			Name:     "id",
+			Flag:     "id",
+			In:       "path",
+			GoType:   "string",
+			Help:     "id (path, required)",
+			Required: true,
+		}},
+		Output: runtime.OutputHints{
+			ResponseMediaType: "application/json",
 		},
-		Output:   runtime.OutputHints{ResponseMediaType: "application/json"},
-		Security: &runtime.SecurityHint{Public: true},
+		Security: &runtime.SecurityHint{
+			Public: true,
+		},
 	},
-	{
+	runtime.CommandSpec{
 		Group:           "Tasks",
 		Use:             "list",
 		Short:           "List tasks",
@@ -87,10 +116,15 @@ var Specs = []runtime.CommandSpec{
 		Method:          "GET",
 		PathTpl:         "/tasks",
 		DefaultHostname: "http://127.0.0.1:3000",
-		Output:          runtime.OutputHints{DefaultColumns: []string{"id", "completed", "title"}, ResponseMediaType: "application/json"},
-		Security:        &runtime.SecurityHint{Public: true},
+		Output: runtime.OutputHints{
+			DefaultColumns:    []string{"id", "completed", "title"},
+			ResponseMediaType: "application/json",
+		},
+		Security: &runtime.SecurityHint{
+			Public: true,
+		},
 	},
-	{
+	runtime.CommandSpec{
 		Group:           "Tasks",
 		Use:             "update",
 		Short:           "Update a task",
@@ -98,15 +132,31 @@ var Specs = []runtime.CommandSpec{
 		Method:          "PATCH",
 		PathTpl:         "/tasks/{id}",
 		DefaultHostname: "http://127.0.0.1:3000",
-		Params: []runtime.ParamSpec{
-			{Name: "id", Flag: "id", In: "path", GoType: "string", Help: "id (path, required)", Required: true},
-		},
+		Params: []runtime.ParamSpec{runtime.ParamSpec{
+			Name:     "id",
+			Flag:     "id",
+			In:       "path",
+			GoType:   "string",
+			Help:     "id (path, required)",
+			Required: true,
+		}},
 		RequestBody: &runtime.RequestBody{
 			Required:  true,
 			MediaType: "application/json",
-			Schema:    &runtime.SchemaSpec{Type: "object", Properties: map[string]*runtime.SchemaSpec{"completed": &runtime.SchemaSpec{Type: "boolean"}, "title": &runtime.SchemaSpec{Type: "string"}}},
+			Schema: &runtime.SchemaSpec{
+				Type: "object",
+				Properties: map[string]*runtime.SchemaSpec{"completed": &runtime.SchemaSpec{
+					Type: "boolean",
+				}, "title": &runtime.SchemaSpec{
+					Type: "string",
+				}},
+			},
 		},
-		Output:   runtime.OutputHints{ResponseMediaType: "application/json"},
-		Security: &runtime.SecurityHint{Public: true},
+		Output: runtime.OutputHints{
+			ResponseMediaType: "application/json",
+		},
+		Security: &runtime.SecurityHint{
+			Public: true,
+		},
 	},
 }
